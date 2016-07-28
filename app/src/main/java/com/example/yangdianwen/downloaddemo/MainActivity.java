@@ -13,9 +13,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.ResponseBody;
+
 public class MainActivity extends Activity implements View.OnClickListener {
 //    String path="http://10.13.20.32:8080/Test/db.zip";
-    private String url="http://gdown.baidu.com/data/wisegame/91319a5a1dfae322/baidu_16785426.apk";
+    public static String url="http://gdown.baidu.com/data/wisegame/91319a5a1dfae322/baidu_16785426.apk";
     private Button downFileBtn;
     private Button downMP3Btn;
     private Context context=this;
@@ -40,6 +46,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (v.getId()){
             case R.id.volley:
                 volley_Get();
+                OkHttpNet instance = OkHttpNet.getInstance();
+                Call call = instance.getCall();
+                //call执行异步任务
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+                    @Override
+                    public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                        ResponseBody body = response.body();
+                        Log.d(TAG, "onResponse: "+body);
+                    }
+                });
                 break;
             case R.id.origin:
             new MyAsyckTask().execute();
